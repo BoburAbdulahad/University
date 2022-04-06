@@ -52,9 +52,7 @@ public class StudentController {
         return studentPage;
     }
     @PostMapping
-    public String add(@RequestBody StudentDto studentDto){
-
-
+    public String add(@RequestBody StudentDto studentDto){//checking in the right added
         Student student=new Student();
         Optional<Group> optionalGroup = groupRepository.findById(studentDto.getGroupId());
         if (!optionalGroup.isPresent())
@@ -73,7 +71,6 @@ public class StudentController {
         if (subjectList.isEmpty()) {
             return "Subjects not founded";
         }
-
 //        dtoSubjectsId.forEach(integer -> {
 //            Optional<Subject> optionalSubject = subjectRepository.findById(integer);
 //            if (optionalSubject.isPresent()){
@@ -89,4 +86,42 @@ public class StudentController {
         return "New student successfully added !!!";
     }
 
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Integer id){
+        try {
+            studentRepository.deleteById(id);
+            return "Student deleted";
+        }catch (Exception e){
+            return "Error in deleting";
+        }
+    }
+    @PutMapping("/{id}")
+    public String edit(@PathVariable Integer id,@RequestBody StudentDto studentDto){
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+        if (!optionalStudent.isPresent()) {
+            return "Sorry, student not founded";
+        }
+        Student student = optionalStudent.get();
+        Optional<Group> optionalGroup = groupRepository.findById(studentDto.getGroupId());
+        if (!optionalGroup.isPresent()) {
+            return "Group not founded for the student";
+        }
+        student.setGroup(optionalGroup.get());
+        student.getAddress().setCity(studentDto.getCity());
+        student.getAddress().setDistrict(studentDto.getDistrict());
+        student.getAddress().setStreet(studentDto.getStreet());
+        addressRepository.save(student.getAddress());
+        student.setFirstName(studentDto.getFirstName());
+        student.setLastName(studentDto.getLastName());
+        List<Subject> subjectList = student.getSubjects();
+        subjectList.clear();
+        List<Subject> newSubjectsList=new ArrayList();
+        studentDto.getSubjectsId().forEach(integer -> subjectRepository.findById(integer).ifPresent(newSubjectsList::add));
+        if (newSubjectsList.isEmpty())
+            return "Subjects not founded";
+        student.setSubjects(newSubjectsList);
+        studentRepository.save(student);
+        return "Student succesfully edited";
+
+    }
 }
