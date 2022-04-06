@@ -53,39 +53,7 @@ public class StudentController {
     }
     @PostMapping
     public String add(@RequestBody StudentDto studentDto){
-//        Student student=new Student();
-//        Optional<Group> optionalGroup = groupRepository.findById(studentDto.getGroupId());
-//        if (!optionalGroup.isPresent()) {
-//            return "Sorry your group not founded";
-//        }
-//        student.setGroup(optionalGroup.get());
-//        List<Subject> savedSubjects = new ArrayList<>();
-//        for (Integer integer : studentDto.getSubjectsId()) {
-//           Optional<Subject> optionalSubject = subjectRepository.findById(integer);
-//            if (!optionalSubject.isPresent())
-//                return "Subject not founded";
-//            if (integer==optionalSubject.get().getId())
-//                savedSubjects.add(optionalSubject.get());
-//        }
 
-
-//        =========
-//        studentDto.getSubjectsId().forEach(integer -> subjectRepository.findById(integer).ifPresent(savedSubjects::add));
-//        if (savedSubjects.isEmpty())
-//            return "Subjects not found!!";
-//
-//
-//        student.setSubjects(savedSubjects);
-//        Address address=new Address();
-//        address.setCity(studentDto.getCity());
-//        address.setDistrict(studentDto.getDistrict());
-//        address.setStreet(studentDto.getStreet());
-//        Address savedAddress = addressRepository.save(address);
-//        student.setAddress(savedAddress);
-//        student.setFirstName(studentDto.getFirstName());
-//        student.setLastName(studentDto.getLastName());
-//        studentRepository.save(student);
-//        return "Student added";
 
         Student student=new Student();
         Optional<Group> optionalGroup = groupRepository.findById(studentDto.getGroupId());
@@ -101,12 +69,21 @@ public class StudentController {
         student.setAddress(address);
         addressRepository.save(address);
         List<Subject> subjectList=new ArrayList<>();
-        for (Integer integer : studentDto.getSubjectsId()) {
-            Optional<Subject> optionalSubject = subjectRepository.findById(integer);
-            if (!optionalSubject.isPresent())
-                return "Subject not founded";
-            subjectList.add(optionalSubject.get());
+        studentDto.getSubjectsId().forEach(integer -> subjectRepository.findById(integer).ifPresent(subjectList::add));
+        if (subjectList.isEmpty()) {
+            return "Subjects not founded";
         }
+
+//        dtoSubjectsId.forEach(integer -> {
+//            Optional<Subject> optionalSubject = subjectRepository.findById(integer);
+//            if (optionalSubject.isPresent()){
+//                subjectList.add(optionalSubject.get());
+//            }else {
+//                return "Subject not found";
+//            }
+//            subjectList.add(optionalSubject.get());
+//        });
+
         student.setSubjects(subjectList);
         studentRepository.save(student);
         return "New student successfully added !!!";
