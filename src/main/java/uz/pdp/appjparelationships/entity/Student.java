@@ -28,7 +28,7 @@ public class Student {
     @ManyToOne
     private Group group;//this is right version
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany//(cascade = CascadeType.ALL)
     @JoinTable(name = "students_subjects",
     joinColumns = @JoinColumn(name = "student_id"),
     inverseJoinColumns = @JoinColumn(name="subject_id")

@@ -1,7 +1,6 @@
 package uz.pdp.appjparelationships.payload;
 
 import lombok.Data;
-import uz.pdp.appjparelationships.entity.Subject;
 
 import java.util.List;
 
