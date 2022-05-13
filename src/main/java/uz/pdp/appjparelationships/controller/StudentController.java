@@ -38,11 +38,12 @@ public class StudentController {
 
 //  1.Vazirlik uchun
     @GetMapping("/forMinistry")
-    public Page<Student> getStudentsForMinistry(@RequestParam int page){
+    public List<Student> getStudentsForMinistry(/*@RequestParam int page*/){
         //select * from student limit 10 offset 0
-        Pageable pageable= PageRequest.of(page,10);
-        Page<Student> studentPage = studentRepository.findAll(pageable);
-        return studentPage;
+//        Pageable pageable= PageRequest.of(page,10);
+//        Page<Student> studentPage = studentRepository.findAll(pageable);
+//        return studentPage;
+        return studentRepository.findAll();
     }
 //  2.Universitet uchun
     @GetMapping("/forUniversity/{universityId}")
